@@ -1,6 +1,7 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 from lists.views import home
 # Create your tests here.
@@ -16,6 +17,5 @@ class simpleTest(TestCase):
 		# Pass request to browser
 		response = home(request)
 		# assert the content
-		self.assertTrue(response.startswith(b"<html>"))
-		self.assertIn(b'<title>hello</title>', response.content)
-		self.assertTrue(response.startswith(b"</html>"))
+		expected_html = render_to_string('home.html')
+		self.assertEqual(response.content.decode(), expected_html)
