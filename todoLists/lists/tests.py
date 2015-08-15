@@ -17,5 +17,5 @@ class simpleTest(TestCase):
 		response = home(request)
 		# assert the content
 		self.assertTrue(response.startswith(b"<html>"))
-		self.assertIn(b'<title>Hello</title>', response.content)
+		self.assertIn(b'<title>hello</title>', response.content)
 		self.assertTrue(response.startswith(b"</html>"))
