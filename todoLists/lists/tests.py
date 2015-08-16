@@ -27,13 +27,22 @@ class simpleTest(TestCase):
 		request.POST['item_text'] = 'A new item'
 
 		response = home(request)
-		self.assertIn('A new item', response.content.decode())
 
+		self.assertEqual(Item.objects.count(), 1)
+		new_item = Item.objects.first()
+		self.assertEqual(new_item.text, 'A new item')
+
+		self.assertIn('A new item', response.content.decode())
 		expected_html = render_to_string(
 			'home.html',
 			{'new_item_text': 'A new item'}
 		)
 		self.assertEqual(response.content.decode(), expected_html)
+
+	def test_home_only_save(self):
+		request = HttpRequest()
+		home(request)
+		self.assertEqual(Item.objects.count(), 0)
 
 class ItemModelTest(TestCase):
 
@@ -54,3 +63,4 @@ class ItemModelTest(TestCase):
 		item2 = saved_items[1]
 		self.assertEqual(item1.text, "First item")
 		self.assertEqual(item2.text, "Second item")
+
