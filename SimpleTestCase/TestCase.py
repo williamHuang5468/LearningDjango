@@ -29,8 +29,8 @@ class NewVisitorTest(unittest.TestCase):
 
 		inputbox.send_keys('Use peacock feathers to make a fly')
 		inputbox.send_keys(Keys.ENTER)
-		self.check_text_in_table('1: Buy peacock feathers')
-		self.check_text_in_table('2: Use peacock feathers to make a fly')
+		self.check_text_in_table('1:Buy peacock feathers')
+		self.check_text_in_table('2:Use peacock feathers to make a fly')
 
 		self.fail('End the test')
 
