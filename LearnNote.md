@@ -126,3 +126,81 @@ Will get
 1. Using the view 
 1. and add the urls
 1. final, return the view.
+
+## Using form to send POST requests##
+
+除錯三個方法:
+1. 將值Print出來
+1. 讓錯誤訊息吐更多資訊
+1. 使用time.sleep在執行之前緩慢。
+
+	import time
+	time.sleep(10)
+	fail()
+
+In `home.html` can add `{% csrf_token %}`to open debug mode.
+
+## Process POST on server ##
+
+用`{{}}`用來拿取Python objects
+
+作測試可以用render_to_string(page, { 'key', 'value'})送值，將網頁轉為string
+
+**view**
+
+	return render(request, 'home.html', 
+		{
+			'new_item_text': request.POST['item_text'],
+		}
+	)
+
+下方程式碼為送POST資料
+	
+	{
+		'new_item_text': request.POST['item_text'],
+	}
+
+## Flow ##
+
+View 轉址 
+
+Urls urlMapping
+
+## First Model ##
+
+models 
+
+extends `models.Model`
+
+	python manage.py makemigrations
+
+Model自動產生ID，如果要額外添加屬性，需要在Model中加入
+
+[Property type Doc](https://docs.djangoproject.com/en/1.7/intro/tutorial01/#creating-models)
+
+### new field 等於 new migration ###
+
+if you get the error message
+
+	django.db.utils.OperationalError: table lists_item has no column named text
+
+then, use command
+
+	python manage.py makemigrations
+
+you need give the default value.
+
+	like TextField(default='')
+
+again
+
+	python manage.py makemigrations
+
+### Saving POST to DB ###
+	
+	Item.objects.create() is same new Item, but don't need save.
+
+migrate
+
+	python manage.py migrate
+	
