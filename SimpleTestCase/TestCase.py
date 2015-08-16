@@ -30,9 +30,24 @@ class NewVisitorTest(unittest.TestCase):
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_element_by_tag_name('tr')
 		self.assertTrue(
-			any(row.text =='1: Buy peacock feathers' for row in rows), 
-			"New to-do item did not appear in table"
+			#rows.text == '1: Buy peacock feathers', "New to-do item did not appear in table -- its text was:\n%s" % (
+			#table.text)
+			'1: Buy peacock feathers', [row.text for row in rows]
 		)
+		self.assertTrue(
+			'2: Use peacock feathers to make a fly', [row.text for row in rows]
+		)
+		'''
+		about `for row in rows` is fail, because the rows is webelement, it can't be iterative.
+		any sound like the iterative method.
+
+		self.assertTrue(
+			any(row.text == '1: Buy peacock feathers' for row in rows),
+			"New to-do item did not appear in table -- its text was:\n%s" % (
+			table.text,
+			)
+		)
+		'''
 		self.fail('End the test')
 
 
