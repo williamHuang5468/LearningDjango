@@ -203,4 +203,31 @@ again
 migrate
 
 	python manage.py migrate
+
+## -- Todo
+
+## reset the sql
+
+	delete the `db.sqlite3`
+	python manage.py migrate --noinput
 	
+## Move the function test into test.py
+	
+	create a folder in project folder.(like functional_tests)
+	move the testcase into folder.
+	create a __init__.py , the testcase will be module.
+
+run 
+
+	python manage.py test functional_tests
+
+run all, include unit test and funcitonal test
+
+	python manage.py test
+
+just run unit test
+	
+	python manage.py test lists
+
+	
+	python3 manage.py test functional_tests
