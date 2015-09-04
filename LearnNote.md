@@ -1160,3 +1160,33 @@ Todo
 - Refactor away some duplication in urls.py
 
 ## A Final Refactor Using URL includes
+
+Then we replace three lines in superlists/urls.py with an include. Notice that include can take a part of a URL regex as a prefix, which will be applied to all the included URLs (this is the bit where we reduce duplication, as well as giving our code a better structure):
+
+superlists/urls.py
+
+    urlpatterns = patterns('',
+        url(r'^$', 'lists.views.home_page', name='home'),
+        url(r'^lists/', include('lists.urls')),
+        # url(r'^admin/', include(admin.site.urls)),
+    )
+
+lists/urls.py
+
+    from django.conf.urls import patterns, url
+
+
+    urlpatterns = patterns('',
+        url(r'^(\d+)/$', 'lists.views.view_list', name='view_list'),
+        url(r'^(\d+)/add_item$', 'lists.views.add_item', name='add_item'),
+        url(r'^new$', 'lists.views.new_list', name='new_list'),
+    )
+
+Todo
+
+- <s>Get FTs to clean up after themselves</s>
+- <s>Adjust model so that items are associated with different lists</s>
+- <s>Add unique URLs for each list</s>
+- <s>Add a URL for creating a new list via POST</s>
+- <s>Add URLs for adding a new item to an existing list via POST</s>
+- <s><b>Refactor away some duplication in urls.py</b></s>
