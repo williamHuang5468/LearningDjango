@@ -60,8 +60,7 @@ run testcase again
     
         def test_case(self):
             self.browser.get('http://localhost:8000')
-            self.assertIn('Hello', self.browser.title)
-            #assert 'Hello' in browser.title, "Browser title was " + browser.title
+            self.assertIn('To-Do', self.browser.title)
             self.fail('Finish the test!')
     
     if __name__ == '__main__':
@@ -118,6 +117,29 @@ Will get
 
 1. 區別URL "/"和 "/About"
 1. Get url , and then return Html
+
+## Write unit test
+
+lists/tests.py
+
+    from django.core.urlresolvers import resolve
+    from django.test import TestCase
+    from lists.views import home_page 
+
+    class HomePageTest(TestCase):
+        def test_root_url_resolves_to_home_page_view(self):
+            found = resolve('/') #
+            self.assertEqual(found.func, home_page)
+
+python manage.py test
+
+    ImportError: cannot import name 'home_page'
+
+Add url
+
+    urlpatterns = patterns('',
+        url(r'^$', 'lists.views.home', name='home'),
+    )
 
 ## Modify Circle ##
 
