@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from lists.views import home
-from lists.models import Item
+from lists.models import Item, List
 
 
 class simpleTest(TestCase):
@@ -27,7 +27,7 @@ class simpleTest(TestCase):
         home(request)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_display_mutiItems(self):
+    def display_mutiItems(self):
         Item.objects.create(text='itemey 1')
         Item.objects.create(text='itemey 2')
 
@@ -36,6 +36,7 @@ class simpleTest(TestCase):
 
         self.assertIn('itemey 1', response.content.decode())
         self.assertIn('itemey 2', response.content.decode())
+
 
 class NewToDoTest(TestCase):
 
@@ -76,37 +77,54 @@ class NewToDoTest(TestCase):
             '/lists/new',
             data={'item_text': 'A new item'}
         )
-        self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
-        #self.assertEqual(response.status_code, 302)
-        #self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+        list = List.objects.first()
+        self.assertRedirects(response, '/lists/%d/' % (list.id,))
+
 
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        list1 = List.objects.create()
+        response = self.client.get('/lists/%d/' % (list1.id,))
         self.assertTemplateUsed(response, 'lists.html')
 
     def test_displays_all_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
+        list1 = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list1)
+        Item.objects.create(text='itemey 2', list=list1)
 
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        other_list = List.objects.create()
+        Item.objects.create(text='other list item 1', list=other_list)
+        Item.objects.create(text='other list item 2', list=other_list)
+
+        response = self.client.get('/lists/%d/' %(list1.id, ))
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
 
+        self.assertNotContains(response, 'other list item 1')
+        self.assertNotContains(response, 'other list item 2')
 
-class ItemModelTest(TestCase):
+
+class ItemAndListModelTest(TestCase):
 
     def test_save_item(self):
         # add item1
+        list1 = List()
+        list1.save()
+
         item1 = Item()
         item1.text = "First item"
+        item1.list = list1
         item1.save()
         # add item2
         item2 = Item()
         item2.text = "Second item"
+        item2.list = list1
         item2.save()
+
+        save_list = List.objects.first()
+        self.assertEqual(save_list, list1)
         # check item of saved.
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
@@ -114,4 +132,6 @@ class ItemModelTest(TestCase):
         item1 = saved_items[0]
         item2 = saved_items[1]
         self.assertEqual(item1.text, "First item")
+        self.assertEqual(item1.list, list1)
         self.assertEqual(item2.text, "Second item")
+        self.assertEqual(item2.list, list1)
